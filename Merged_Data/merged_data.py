@@ -3,9 +3,9 @@ from io import StringIO
 from azure.identity import DefaultAzureCredential
 from azure.storage.blob import BlobServiceClient
 
-# Azure Blob Storage Configuratie (zonder connection string)
-STORAGE_ACCOUNT_NAME = "bdtscraper"  # Vervang dit met jouw storage account naam
-CONTAINER_NAME = "csv-files"  # Vervang dit met jouw container naam
+# Azure Blob Storage Configuratie
+STORAGE_ACCOUNT_NAME = "bdtscraper"
+CONTAINER_NAME = "csv-files"
 
 # Verbinden met Azure Blob Storage via DefaultAzureCredential
 def get_blob_service_client():
@@ -27,7 +27,7 @@ def upload_to_blob(blob_name, dataframe):
     blob_client.upload_blob(csv_buffer.getvalue(), overwrite=True)
     print(f"Bestand geüpload naar Azure Blob Storage: {blob_name}")
 
-# Bestandspaden en output-bestanden definiëren (nu voor Azure)
+# Bestandspaden en output-bestanden definiëren
 datasets = [
     ("Regressie_Model/student-mat_regression_predictions.csv", "Classificatie_Model/student-mat_classification_predictions.csv", "Merged_Data/student-mat_merged.csv"),
     ("Regressie_Model/student-por_regression_predictions.csv", "Classificatie_Model/student-por_classification_predictions.csv", "Merged_Data/student-por_merged.csv")
@@ -48,7 +48,7 @@ for df1_path, df2_path, output_path in datasets:
     merged_df = pd.merge(df1, df2[['G3_class'] + merge_columns], on=merge_columns, how='inner')
 
     # Upload het samengevoegde bestand naar Azure Blob Storage
-    azure_blob_path = f"Merged_Data/{output_path.split('/')[-1]}"  # Zorgt voor juiste blob-padstructuur
+    azure_blob_path = f"Merged_Data/{output_path.split('/')[-1]}"
     upload_to_blob(azure_blob_path, merged_df)
 
 print("Alle bestanden succesvol samengevoegd en geüpload naar Azure!")
